@@ -1,14 +1,8 @@
 <?php
 class ModelModuleProdcat extends Model {
 	public function getRandProducts($data = array()) {
-		if ($this->customer->isLogged()) {
-			$customer_group_id = $this->customer->getCustomerGroupId();
-		} else {
-			$customer_group_id = $this->config->get('config_customer_group_id');
-		}	
-		$cache = md5(http_build_query($data));
 		
-			$sql = "SELECT product_id FROM " . DB_PREFIX . "product_to_category WHERE category_id = '" . $data['category_id'] . "'";	
+			$sql = "SELECT " . DB_PREFIX . "product_to_category.product_id, " . DB_PREFIX . "product_to_category.category_id, " . DB_PREFIX . "category_description.description, " . DB_PREFIX . "category_description.name FROM " . DB_PREFIX . "product_to_category  LEFT JOIN " . DB_PREFIX . "category_description ON " . DB_PREFIX . "product_to_category.category_id = " . DB_PREFIX . "category_description.category_id WHERE " . DB_PREFIX . "product_to_category.category_id = '" . $data['category_id'] . "'";	
 			$sql .= " GROUP BY product_id";
 			$sql .= " ORDER BY Rand()";
 			if (isset($data['start']) || isset($data['limit'])) {
@@ -21,20 +15,10 @@ class ModelModuleProdcat extends Model {
 				$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 			}			
 			$product_data = array();					
-			$query = $this->db->query($sql);		
-			foreach ($query->rows as $result) {
-				$product_data[$result['product_id']] = $this->model_catalog_product->getProduct($result['product_id']);
-			}			
-		return $product_data;
-	}
-	public function getLayoutRoutes($layout_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "layout_route WHERE layout_id = '" . (int)$layout_id . "'");
-		
-		return $query->rows;
-	}
-	public function getCatDesc($category_id) {
-		$query = $this->db->query("SELECT description, name FROM " . DB_PREFIX . "category_description WHERE category_id = '" . $category_id . "'");
-		return $query->rows;
+			$query = $this->db->query($sql);	
+			return $query->rows;
+			
+
 	}
 }
 ?>

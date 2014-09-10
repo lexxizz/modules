@@ -38,12 +38,12 @@ class ControllerModuleProdcat extends Controller {
 		$this->data['text_goods'] = $this->language->get('text_goods');
 		$this->data['text_goodswh'] = $this->language->get('text_goodswh');
 		$this->data['text_num'] = $this->language->get('text_num');
-		
+		$this->data['tab_module'] = $this->language->get('tab_module');
 		$this->data['entry_layout'] = $this->language->get('entry_layout');
 		$this->data['entry_position'] = $this->language->get('entry_position');
 		$this->data['entry_status'] = $this->language->get('entry_status');
 		$this->data['entry_sort_order'] = $this->language->get('entry_sort_order');
-		
+		$this->data['button_add_menu'] = $this->language->get('button_add_menu');	
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_module'] = $this->language->get('button_add_module');
@@ -90,7 +90,9 @@ class ControllerModuleProdcat extends Controller {
 			$this->data['modules'] = $this->config->get('prodcat_module');
 		}	
 		
-			
+			$this->load->model('localisation/language');
+		
+		$this->data['languages'] = $this->model_localisation_language->getLanguages();	
 		$this->load->model('design/layout');
 		
 		$this->data['layouts'] = $this->model_design_layout->getLayouts();
@@ -104,7 +106,7 @@ class ControllerModuleProdcat extends Controller {
 				
 		$this->response->setOutput($this->render());
 	}
-	
+
 	private function validate() {
 		if (!$this->user->hasPermission('modify', 'module/prodcat')) {
 			$this->error['warning'] = $this->language->get('error_permission');

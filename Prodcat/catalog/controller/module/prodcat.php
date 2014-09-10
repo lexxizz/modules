@@ -9,12 +9,12 @@ class ControllerModuleProdcat extends Controller {
 		
     	$this->data['heading_title'] = sprintf($this->language->get('heading_title'), $this->config->get('config_name'));
 				$this->data['button_cart'] = $this->language->get('button_cart');
-		 $this->data['l'] = $setting['layout_id'];
 		 $this->data['viewsub'] = $setting['podcat'];
 		 $this->data['viewdesc'] = $setting['desc'];
+		 $this->data['viewgoods'] = $setting['goods'];
 		 $this->data['category_id'] = $setting['check'];
-		$this->data['layout_routes'] = $this->model_module_prodcat->getLayoutRoutes($this->data['l']);
 		$this->data['subcategories'] = array();
+		
 			
 			$results = $this->model_catalog_category->getCategories($setting['check']);
 			
@@ -23,17 +23,16 @@ class ControllerModuleProdcat extends Controller {
 					'filter_category_id'  => $result['category_id'],
 					'filter_sub_category' => true
 				);
-				
-				$product_total = $this->model_catalog_product->getTotalProducts($data);				
+							
 				if(isset($this->request->get['path']) || (isset($this->request->get['path']) && isset($this->request->get['route'])))  {
 				$this->data['subcategories'][] = array(
-					'name'  => $result['name'] . ($this->config->get('config_product_count') ? ' (' . $product_total . ')' : ''),
+					'name'  => $result['name'] ,
 					'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id']),
 					'thumb' => $this->model_tool_image->resize(($result['image']=='' ? 'no_image.jpg' : $result['image']), $setting['sub_width'], $setting['sub_height'])
 				);
 				}else{
 					$this->data['subcategories'][] = array(
-					'name'  => $result['name'] . ($this->config->get('config_product_count') ? ' (' . $product_total . ')' : ''),
+					'name'  => $result['name'] ,
 					'href'  => $this->url->link('product/category', 'path=' . $result['category_id']),
 					'thumb' => $this->model_tool_image->resize(($result['image']=='' ? 'no_image.jpg' : $result['image']), $setting['sub_width'], $setting['sub_height']) 
 				);
@@ -51,7 +50,15 @@ class ControllerModuleProdcat extends Controller {
 		);
 
 		$results = $this->model_module_prodcat->getRandProducts($data);
+		$this->data['description']=html_entity_decode($results['0']['description'], ENT_QUOTES, 'UTF-8');
+		$this->data['descname']=html_entity_decode($results['0']['name'], ENT_QUOTES, 'UTF-8');
+
 		foreach ($results as $result) {
+				$product_data[$result['product_id']] = $this->model_catalog_product->getProduct($result['product_id']);
+			}			
+		
+		foreach ($product_data as $result) {
+		if ($result !== false){
 			if ($result['image']) {
 				$image = $this->model_tool_image->resize($result['image'], $setting['image_width'], $setting['image_height']);
 			} else {
@@ -87,10 +94,8 @@ class ControllerModuleProdcat extends Controller {
 				'href'    	 => $this->url->link('product/product', 'product_id=' . $result['product_id']),
 			);
 		}
+		}
 	
-			$this->data['desc'] = $this->model_module_prodcat->getCatDesc($this->data['category_id']);
-			$this->data['description']=html_entity_decode($this->data['desc']['0']['description'], ENT_QUOTES, 'UTF-8');
-			$this->data['descname']=html_entity_decode($this->data['desc']['0']['name'], ENT_QUOTES, 'UTF-8');
 
 
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/prodcat.tpl')) {

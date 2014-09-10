@@ -1,6 +1,7 @@
 <div class="box">
   <div class="box-heading"><?php echo $heading_title . $descname; ?></div>
   <div class="box-content">
+          <?php if ($viewgoods) { ?>
     <div class="box-product">
       <?php foreach ($products as $product) { ?>
       <div>
@@ -24,30 +25,16 @@
       </div>
       <?php } ?>
     </div>
-  </div>
-</div>
+	  <?php } ?>
 <?php if ($viewsub) { ?>
 <?php if ($subcategories) { ?>
   <h2><?php echo $descname; ?></h2>
   <div class="category-list">
-    <?php if (count($subcategories) <= 5) { ?>
     <ul>
       <?php foreach ($subcategories as $category) { ?>
       <li><a href="<?php echo $category['href']; ?>"><img src="<?php echo $category['thumb']; ?>"><span><?php echo $category['name']; ?></a></span></li>
       <?php } ?>
-    </ul>
-    <?php } else { ?>
-    <?php for ($i = 0; $i < count($subcategories);) { ?>
-    <ul>
-      <?php $j = $i + ceil(count($subcategories) / 4); ?>
-      <?php for (; $i < $j; $i++) { ?>
-      <?php if (isset($subcategories[$i])) { ?>
-      <li><a href="<?php echo $subcategories[$i]['href']; ?>"><img src="<?php echo $categories[$i]['thumb']; ?>"><span><?php echo $subcategories[$i]['name']; ?></span></a></li>
-      <?php } ?>
-      <?php } ?>
-    </ul>
-    <?php } ?>
-    <?php } ?>
+    </ul>  
   </div>
   <?php } ?>
   <?php } ?>
@@ -58,3 +45,5 @@
     <?php } ?>
   </div>
    <?php } ?>
+  </div>
+</div>
