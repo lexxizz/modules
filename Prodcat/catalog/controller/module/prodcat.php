@@ -14,7 +14,9 @@ class ControllerModuleProdcat extends Controller {
 		 $this->data['viewgoods'] = $setting['goods'];
 		 $this->data['category_id'] = $setting['check'];
 		$this->data['subcategories'] = array();
-		
+		if(isset($setting['prodsorts'])){
+			list($this->data['sort'], $this->data['order']) = explode('-', $setting['prodsorts']);
+		}
 			
 			$results = $this->model_catalog_category->getCategories($setting['check']);
 			
@@ -40,25 +42,25 @@ class ControllerModuleProdcat extends Controller {
 			}
 
 		$this->data['products'] = array();
-		
 		$data = array(
 			'category_id' => $setting['check'],
-			'sort'  => 'p.date_added',
-			'order' => 'DESC',
+			'sort'  => $this->data['sort'],
+			'order' => $this->data['order'],
 			'start' => 0,
 			'limit' => $setting['limit']
 		);
 
-		$results = $this->model_module_prodcat->getRandProducts($data);
-		$this->data['description']=html_entity_decode($results['0']['description'], ENT_QUOTES, 'UTF-8');
-		$this->data['descname']=html_entity_decode($results['0']['name'], ENT_QUOTES, 'UTF-8');
-
-		foreach ($results as $result) {
-				$product_data[$result['product_id']] = $this->model_catalog_product->getProduct($result['product_id']);
-			}			
+		$product_data = $this->model_module_prodcat->getRandProducts($data);
+//		var_dump($product_data);
 		
+		$this->data['description']=html_entity_decode($product_data['0']['description'], ENT_QUOTES, 'UTF-8');
+		$this->data['descname']=html_entity_decode($product_data['0']['category'], ENT_QUOTES, 'UTF-8');
 		foreach ($product_data as $result) {
+		
 		if ($result !== false){
+		
+
+		
 			if ($result['image']) {
 				$image = $this->model_tool_image->resize($result['image'], $setting['image_width'], $setting['image_height']);
 			} else {
@@ -67,6 +69,7 @@ class ControllerModuleProdcat extends Controller {
 						
 			if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
 				$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')));
+				
 			} else {
 				$price = false;
 			}
@@ -90,7 +93,6 @@ class ControllerModuleProdcat extends Controller {
 				'price'   	 => $price,
 				'special' 	 => $special,
 				'rating'     => $rating,
-				'reviews'    => sprintf($this->language->get('text_reviews'), (int)$result['reviews']),
 				'href'    	 => $this->url->link('product/product', 'product_id=' . $result['product_id']),
 			);
 		}

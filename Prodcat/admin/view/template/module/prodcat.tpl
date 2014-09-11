@@ -119,6 +119,16 @@
 				<td class="left"><input type="text" class="rfield" name="prodcat_module[<?php echo $module_row; ?>][limit]" value="" size="3" />
 				 </tr>
 							  <? } ?>
+			<select  name="prodcat_module[<?php echo $module_row; ?>][prodsorts]">
+            <?php foreach ($sorts as $sorts) { ?>
+			   <?php if ($sorts['value'] == $module[prodsorts]) { ?>
+			   <option value="<?php echo $sorts['value'];?>" selected="selected"><?php echo $sorts['text']; ?></option>
+                <?php } else { ?>
+                <option value="<?php echo $sorts['value'];?>"><?php echo $sorts['text']; ?></option>
+            <?php } ?>
+            <?php } ?>
+
+			 </select>
         </table>
 
         <table id="module" class="list">

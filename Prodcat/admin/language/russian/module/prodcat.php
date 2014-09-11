@@ -12,6 +12,7 @@ $_['text_column_left']                          = 'Левая колонка';
 $_['text_column_right']                         = 'Правая колонка';
 $_['tab_module']                                = 'Модуль';
 $_['button_add_menu']                           = 'Добавить модуль';
+$_['text_random']                	           = 'Случайно';
 
 // Entry        
 $_['entry_layout']                              = 'Схема:';

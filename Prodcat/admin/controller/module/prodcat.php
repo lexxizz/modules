@@ -82,21 +82,73 @@ class ControllerModuleProdcat extends Controller {
 		$this->data['modules'] = array();
 		$this->data['categories'] = array();
 		$this->data['categories'] = $this->model_catalog_category->getCategoriesByParentId();
-		
+
 		
 		if (isset($this->request->post['prodcat_module'])) {
 			$this->data['modules'] = $this->request->post['prodcat_module'];
 		} elseif ($this->config->get('prodcat_module')) { 
 			$this->data['modules'] = $this->config->get('prodcat_module');
 		}	
-		
 			$this->load->model('localisation/language');
 		
 		$this->data['languages'] = $this->model_localisation_language->getLanguages();	
 		$this->load->model('design/layout');
 		
 		$this->data['layouts'] = $this->model_design_layout->getLayouts();
-		
+		$this->data['sorts'] = array();
+			
+			$this->data['sorts'][] = array(
+				'text'  => $this->language->get('text_default'),
+				'value' => 'p.sort_order-ASC'
+			);
+			
+			$this->data['sorts'][] = array(
+				'text'  => $this->language->get('text_name_asc'),
+				'value' => 'pd.name-ASC'
+			);
+
+			$this->data['sorts'][] = array(
+				'text'  => $this->language->get('text_name_desc'),
+				'value' => 'pd.name-DESC'
+			);
+
+			$this->data['sorts'][] = array(
+				'text'  => $this->language->get('text_price_asc'),
+				'value' => 'p.price-ASC'
+			); 
+
+			$this->data['sorts'][] = array(
+				'text'  => $this->language->get('text_price_desc'),
+				'value' => 'p.price-DESC'
+			); 
+			
+			if ($this->config->get('config_review_status')) {
+				$this->data['sorts'][] = array(
+					'text'  => $this->language->get('text_rating_desc'),
+					'value' => 'rating-DESC'
+				); 
+				
+				$this->data['sorts'][] = array(
+					'text'  => $this->language->get('text_rating_asc'),
+					'value' => 'rating-ASC'
+				);
+			}
+			
+			$this->data['sorts'][] = array(
+				'text'  => $this->language->get('text_model_asc'),
+				'value' => 'p.model-ASC'
+			);
+
+			$this->data['sorts'][] = array(
+				'text'  => $this->language->get('text_model_desc'),
+				'value' => 'p.model-DESC'
+			);
+			
+			$this->data['sorts'][] = array(
+				'text'  => $this->language->get('text_random'),
+				'value' => ' -Rand()'
+			);
+			
 		
 		$this->template = 'module/prodcat.tpl';
 		$this->children = array(
